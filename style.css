@@ -1,0 +1,164 @@
+:root{
+  --bg: #0d0f12;
+  --panel: #16191d;
+  --panel-2: #1e2228;
+  --accent: #5ad1c9;
+  --accent-2: #ffb84d;
+  --text: #f2f3f5;
+  --text-dim: #9aa1ab;
+  --danger: #ff6b6b;
+  --radius: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+*{ box-sizing: border-box; }
+
+html, body{
+  margin:0; padding:0; width:100%; height:100%;
+  background: var(--bg); color: var(--text);
+  overflow: hidden;
+}
+
+/* MindAR injects the camera <video> + <canvas> full-screen automatically */
+a-scene{ position:fixed; inset:0; z-index:0; }
+
+/* ---------- Loading splash ---------- */
+#loading-screen{
+  position:fixed; inset:0; z-index:50;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:16px; background: var(--bg);
+}
+#loading-screen p{ color:var(--text-dim); font-size:14px; }
+.spinner{
+  width:36px; height:36px; border-radius:50%;
+  border:3px solid rgba(255,255,255,0.15); border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* ---------- Scan hint ---------- */
+#scan-hint{
+  position:fixed; top: max(20px, env(safe-area-inset-top)); left:50%;
+  transform: translateX(-50%);
+  background: rgba(20,22,26,0.75); backdrop-filter: blur(6px);
+  color: var(--text-dim); font-size: 13px;
+  padding: 10px 16px; border-radius: 999px;
+  display:flex; align-items:center; gap:8px;
+  z-index: 10; transition: opacity .25s ease;
+}
+.hint-dot{
+  width:8px; height:8px; border-radius:50%; background: var(--accent);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.25;} }
+
+/* ---------- Guide bottom-sheet panel ---------- */
+#guide-panel{
+  position:fixed; left:0; right:0; bottom:0; z-index:20;
+  background: var(--panel);
+  border-radius: 20px 20px 0 0;
+  max-height: 72vh; overflow-y:auto;
+  padding: 8px 20px calc(20px + env(safe-area-inset-bottom));
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+  transform: translateY(0);
+  transition: transform .25s ease;
+}
+#guide-panel.hidden{ transform: translateY(110%); }
+
+#guide-drag-handle{
+  width: 40px; height:4px; border-radius:4px; background: rgba(255,255,255,0.2);
+  margin: 6px auto 10px;
+}
+
+#guide-header{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+}
+#guide-eyebrow{
+  margin:0 0 2px; font-size:11px; letter-spacing: .08em; color: var(--accent); font-weight:600;
+}
+#guide-title{ margin:0; font-size:20px; line-height:1.25; }
+
+#close-guide, #close-admin{
+  background: var(--panel-2); border:none; color: var(--text);
+  width:32px; height:32px; border-radius:50%; font-size:16px; flex-shrink:0;
+  cursor:pointer;
+}
+
+#guide-body{ margin-top: 14px; display:flex; flex-direction:column; gap:10px; }
+
+.control-card{
+  background: var(--panel-2); border-radius: 12px; padding: 12px 14px;
+}
+.control-card h4{ margin:0 0 4px; font-size:15px; color: var(--accent-2); }
+.control-card p{ margin:0; font-size:14px; color: var(--text); line-height:1.45; opacity:.9; }
+
+.empty-state{ color: var(--text-dim); font-size:14px; padding: 10px 0; }
+
+.ghost-btn{
+  display:block; width:100%; text-align:center;
+  background: transparent; border: 1px dashed rgba(255,255,255,0.25);
+  color: var(--text-dim); padding: 10px 14px; border-radius: 10px;
+  margin-top: 14px; font-size: 13px; cursor:pointer;
+}
+.primary-btn{
+  background: var(--accent); color:#04211f; border:none;
+  padding: 12px 16px; border-radius: 10px; font-weight:600; font-size:14px; cursor:pointer;
+}
+.danger-btn{
+  background: transparent; color: var(--danger); border: 1px solid var(--danger);
+  padding: 12px 16px; border-radius: 10px; font-size:14px; cursor:pointer;
+}
+
+/* ---------- Admin gear + panel ---------- */
+#admin-toggle{
+  position:fixed; z-index:30;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  right: 16px;
+  width:48px; height:48px; border-radius:50%;
+  background: var(--panel-2); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text); font-size:20px; cursor:pointer;
+}
+
+#admin-panel{
+  position:fixed; inset:0; z-index:40;
+  background: rgba(0,0,0,0.55);
+  display:flex; align-items:flex-end; justify-content:center;
+}
+#admin-panel.hidden{ display:none; }
+
+#admin-card{
+  width:100%; max-width: 480px; max-height: 86vh; overflow-y:auto;
+  background: var(--panel); border-radius: 20px 20px 0 0;
+  padding: 16px 20px calc(20px + env(safe-area-inset-bottom));
+}
+#admin-header{ display:flex; align-items:center; justify-content:space-between; }
+#admin-header h2{ font-size:18px; margin:0; }
+
+.field-label{
+  display:block; margin: 16px 0 6px; font-size:12px; color: var(--text-dim);
+  letter-spacing: .03em; text-transform: uppercase;
+}
+#admin-body select, #admin-body input[type="text"], #admin-body input[type="number"],
+.control-row input, .control-row textarea{
+  width:100%; background: var(--panel-2); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text); padding: 10px 12px; border-radius: 10px; font-size:14px;
+}
+.control-row textarea{ resize: vertical; min-height: 54px; }
+
+.control-row{
+  background: var(--panel-2); border-radius: 12px; padding: 12px; margin-top:10px;
+  display:flex; flex-direction:column; gap:8px; position:relative;
+}
+.control-row .remove-row{
+  position:absolute; top:8px; right:8px;
+  background:none; border:none; color: var(--text-dim); font-size:14px; cursor:pointer;
+}
+
+#admin-actions{ display:flex; gap:10px; margin-top:18px; }
+#admin-actions .primary-btn, #admin-actions .danger-btn{ flex:1; }
+
+#admin-io{ display:flex; gap:10px; margin-top:10px; }
+#admin-io .ghost-btn{ margin-top:0; flex:1; cursor:pointer; }
+#import-label{ display:flex; align-items:center; justify-content:center; }
+
+.hidden{ display:none !important; }
